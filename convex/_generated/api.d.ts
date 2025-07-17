@@ -31,3 +31,7 @@ export declare const internal: FilterApi<
   typeof fullApi,
   FunctionReference<any, "internal">
 >;
+
+export function syncUser(syncUser: any, arg1: { clerkId: string; email: string; name: string; image: string; }) {
+    throw new Error("Function not implemented.");
+}
