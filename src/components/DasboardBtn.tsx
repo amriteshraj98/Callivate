@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { SparklesIcon } from "lucide-react";
-
+import { useUserRole } from "@/hooks/useUserRole";
 
 function DasboardBtn() {
-   const isCandidate = false; // Replace with actual logic to determine if the user is a candidate
-  const isInterviewer = false; // Replace with actual loading state if applicable
-  if (isCandidate ) return null;
+  const { isCandidate, isLoading } = useUserRole();
+
+  if (isCandidate || isLoading) return null;
 
   return (
     <Link href={"/dashboard"}>
