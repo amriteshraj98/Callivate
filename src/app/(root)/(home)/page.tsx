@@ -11,6 +11,7 @@ import MeetingModal from "@/components/MeetingModal";
 import LoaderUI from "@/components/LoaderUI";
 import { Loader2Icon } from "lucide-react";
 import MeetingCard from "@/components/MeetingCard";
+import { groupInterviews } from "@/lib/utils";
 
 export default function Home() {
   const router = useRouter();
@@ -36,6 +37,9 @@ export default function Home() {
   };
 
   if (isLoading) return <LoaderUI />;
+
+  // Group interviews by status
+  const groupedInterviews = interviews ? groupInterviews(interviews) : {};
 
   return (
     <div className="container max-w-7xl mx-auto p-6">
@@ -69,6 +73,49 @@ export default function Home() {
             title={modalType === "join" ? "Join Meeting" : "Start Meeting"}
             isJoinMeeting={modalType === "join"}
           />
+
+          {/* Completed Interviews Section for Interviewers */}
+          {groupedInterviews.completed && groupedInterviews.completed.length > 0 && (
+            <div className="mt-12">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Completed Interviews</h2>
+                  <p className="text-muted-foreground mt-1">
+                    Review and provide feedback for completed interviews
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {groupedInterviews.completed.length} completed
+                  </span>
+                </div>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {groupedInterviews.completed.map((interview) => (
+                  <MeetingCard key={interview._id} interview={interview} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upcoming Interviews Section */}
+          {groupedInterviews.upcoming && groupedInterviews.upcoming.length > 0 && (
+            <div className="mt-12">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Upcoming Interviews</h2>
+                  <p className="text-muted-foreground mt-1">
+                    Your scheduled interviews
+                  </p>
+                </div>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {groupedInterviews.upcoming.map((interview) => (
+                  <MeetingCard key={interview._id} interview={interview} />
+                ))}
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -83,10 +130,30 @@ export default function Home() {
                 <Loader2Icon className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : interviews.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {interviews.map((interview) => (
-                  <MeetingCard key={interview._id} interview={interview} />
-                ))}
+              <div className="space-y-8">
+                {/* Upcoming Interviews */}
+                {groupedInterviews.upcoming && groupedInterviews.upcoming.length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">Upcoming Interviews</h2>
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {groupedInterviews.upcoming.map((interview) => (
+                        <MeetingCard key={interview._id} interview={interview} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Completed Interviews */}
+                {groupedInterviews.completed && groupedInterviews.completed.length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">Completed Interviews</h2>
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {groupedInterviews.completed.map((interview) => (
+                        <MeetingCard key={interview._id} interview={interview} />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">

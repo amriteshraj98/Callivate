@@ -6,7 +6,7 @@ import {
   SpeakerLayout,
   useCallStateHooks,
 } from "@stream-io/video-react-sdk";
-import { LayoutListIcon, LoaderIcon, UsersIcon } from "lucide-react";
+import { LayoutListIcon, LoaderIcon, UsersIcon, CheckCircleIcon, XCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
@@ -19,14 +19,28 @@ import {
 import { Button } from "./ui/button";
 import EndCallButton from "./EndCallButton";
 import CodeEditor from "./CodeEditor";
+import InterviewReviewDialog from "./InterviewReviewDialog";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { useParams } from "next/navigation";
 
 function MeetingRoom() {
   const router = useRouter();
+  const params = useParams();
   const [layout, setLayout] = useState<"grid" | "speaker">("speaker");
   const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
+  const { isInterviewer } = useUserRole();
 
   const callingState = useCallCallingState();
+
+  // Get the current interview
+  const interview = useQuery(api.interviews.getInterviewByStreamCallId, {
+    streamCallId: params.id as string,
+  });
+
+  const updateInterviewStatus = useMutation(api.interviews.updateInterviewStatus);
 
   if (callingState !== CallingState.JOINED) {
     return (
@@ -87,6 +101,21 @@ function MeetingRoom() {
 
                   <EndCallButton />
                 </div>
+
+                {/* Interviewer Controls */}
+                {isInterviewer && interview && interview.status === "completed" && (
+                  <div className="flex items-center gap-2 mt-4">
+                    <InterviewReviewDialog 
+                      interviewId={interview._id}
+                      trigger={
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <CheckCircleIcon className="h-4 w-4" />
+                          Submit Review
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

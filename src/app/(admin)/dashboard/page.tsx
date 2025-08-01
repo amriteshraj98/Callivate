@@ -12,9 +12,10 @@ import { INTERVIEW_CATEGORY } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarIcon, CheckCircle2Icon, ClockIcon, XCircleIcon } from "lucide-react";
+import { CalendarIcon, CheckCircle2Icon, ClockIcon, XCircleIcon, EyeIcon } from "lucide-react";
 import { format } from "date-fns";
-import CommentDialog from "@/components/CommentDialog";
+import InterviewReviewDialog from "@/components/InterviewReviewDialog";
+import InterviewReviewDisplay from "@/components/InterviewReviewDisplay";
 
 type Interview = Doc<"interviews">;
 
@@ -91,28 +92,19 @@ function DashboardPage() {
                           </div>
                         </CardContent>
 
-                        {/* PASS & FAIL BUTTONS */}
-                        <CardFooter className="p-4 pt-0 flex flex-col gap-3">
+                        {/* REVIEW BUTTONS */}
+                        <CardFooter className="p-4 pt-0">
                           {interview.status === "completed" && (
-                            <div className="flex gap-2 w-full">
-                              <Button
-                                className="flex-1"
-                                onClick={() => handleStatusUpdate(interview._id, "succeeded")}
-                              >
-                                <CheckCircle2Icon className="h-4 w-4 mr-2" />
-                                Pass
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                className="flex-1"
-                                onClick={() => handleStatusUpdate(interview._id, "failed")}
-                              >
-                                <XCircleIcon className="h-4 w-4 mr-2" />
-                                Fail
-                              </Button>
-                            </div>
+                            <InterviewReviewDialog 
+                              interviewId={interview._id}
+                              trigger={
+                                <Button className="w-full gap-2">
+                                  <CheckCircle2Icon className="h-4 w-4" />
+                                  {interview.result ? "Update Review" : "Submit Review"}
+                                </Button>
+                              }
+                            />
                           )}
-                          <CommentDialog interviewId={interview._id} />
                         </CardFooter>
                       </Card>
                     );

@@ -19,9 +19,22 @@ export default defineSchema({
     streamCallId: v.string(),
     candidateId: v.string(),
     interviewerIds: v.array(v.string()),
+    result: v.optional(v.union(v.literal("pass"), v.literal("fail"))),
+    review: v.optional(v.object({
+      rating: v.number(),
+      feedback: v.string(),
+      strengths: v.optional(v.array(v.string())),
+      areasForImprovement: v.optional(v.array(v.string())),
+      overallAssessment: v.string(),
+      recommendedForNextRound: v.optional(v.boolean()),
+    })),
+    reviewedBy: v.optional(v.string()), // clerkId of the reviewer
+    reviewedAt: v.optional(v.number()),
   })
     .index("by_candidate_id", ["candidateId"])
-    .index("by_stream_call_id", ["streamCallId"]),
+    .index("by_stream_call_id", ["streamCallId"])
+    .index("by_status", ["status"])
+    .index("by_result", ["result"]),
 
   comments: defineTable({
     content: v.string(),

@@ -45,6 +45,7 @@ function InterviewScheduleUI() {
     description: "",
     date: new Date(),
     time: "09:00",
+    endTime: "10:00",
     candidateId: "",
     interviewerIds: user?.id ? [user.id] : [],
   });
@@ -56,13 +57,28 @@ function InterviewScheduleUI() {
       return;
     }
 
+    // Validate that end time is after start time
+    const [startHours, startMinutes] = formData.time.split(":").map(Number);
+    const [endHours, endMinutes] = formData.endTime.split(":").map(Number);
+    const startTimeMinutes = startHours * 60 + startMinutes;
+    const endTimeMinutes = endHours * 60 + endMinutes;
+    
+    if (endTimeMinutes <= startTimeMinutes) {
+      toast.error("End time must be after start time");
+      return;
+    }
+
     setIsCreating(true);
 
     try {
-      const { title, description, date, time, candidateId, interviewerIds } = formData;
+      const { title, description, date, time, endTime, candidateId, interviewerIds } = formData;
       const [hours, minutes] = time.split(":");
+      const [endHours, endMinutes] = endTime.split(":");
       const meetingDate = new Date(date);
       meetingDate.setHours(parseInt(hours), parseInt(minutes), 0);
+      
+      const endDate = new Date(date);
+      endDate.setHours(parseInt(endHours), parseInt(endMinutes), 0);
 
       const id = crypto.randomUUID();
       const call = client.call("default", id);
@@ -81,6 +97,7 @@ function InterviewScheduleUI() {
         title,
         description,
         startTime: meetingDate.getTime(),
+        endTime: endDate.getTime(),
         status: "upcoming",
         streamCallId: id,
         candidateId,
@@ -95,6 +112,7 @@ function InterviewScheduleUI() {
         description: "",
         date: new Date(),
         time: "09:00",
+        endTime: "10:00",
         candidateId: "",
         interviewerIds: user?.id ? [user.id] : [],
       });
@@ -231,7 +249,7 @@ function InterviewScheduleUI() {
               </div>
 
               {/* DATE & TIME */}
-              <div className="flex gap-4">
+              <div className="space-y-4">
                 {/* CALENDAR */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Date</label>
@@ -244,25 +262,45 @@ function InterviewScheduleUI() {
                   />
                 </div>
 
-                {/* TIME */}
+                {/* TIME RANGE */}
+                <div className="flex gap-4">
+                  <div className="space-y-2 flex-1">
+                    <label className="text-sm font-medium">Start Time</label>
+                    <Select
+                      value={formData.time}
+                      onValueChange={(time) => setFormData({ ...formData, time })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select start time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TIME_SLOTS.map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Time</label>
-                  <Select
-                    value={formData.time}
-                    onValueChange={(time) => setFormData({ ...formData, time })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIME_SLOTS.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2 flex-1">
+                    <label className="text-sm font-medium">End Time</label>
+                    <Select
+                      value={formData.endTime}
+                      onValueChange={(endTime) => setFormData({ ...formData, endTime })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select end time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TIME_SLOTS.map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 

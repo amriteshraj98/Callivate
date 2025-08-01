@@ -14,17 +14,15 @@ export const groupInterviews = (interviews: Interview[]) => {
   if (!interviews) return {};
 
   return interviews.reduce((acc: any, interview: Interview) => {
-    const date = new Date(interview.startTime);
-    const now = new Date();
-
-    if (interview.status === "succeeded") {
-      acc.succeeded = [...(acc.succeeded || []), interview];
-    } else if (interview.status === "failed") {
-      acc.failed = [...(acc.failed || []), interview];
-    } else if (isBefore(date, now)) {
+    if (interview.status === "completed") {
       acc.completed = [...(acc.completed || []), interview];
-    } else if (isAfter(date, now)) {
+    } else if (interview.status === "live") {
+      acc.live = [...(acc.live || []), interview];
+    } else if (interview.status === "upcoming") {
       acc.upcoming = [...(acc.upcoming || []), interview];
+    } else {
+      // Handle any other statuses
+      acc.other = [...(acc.other || []), interview];
     }
 
     return acc;
@@ -77,17 +75,6 @@ export const calculateRecordingDuration = (startTime: string, endTime: string) =
 };
 
 export const getMeetingStatus = (interview: Interview) => {
-  const now = new Date();
-  const interviewStartTime = interview.startTime;
-  const endTime = addHours(interviewStartTime, 1);
-
-  if (
-    interview.status === "completed" ||
-    interview.status === "failed" ||
-    interview.status === "succeeded"
-  )
-    return "completed";
-  if (isWithinInterval(now, { start: interviewStartTime, end: endTime })) return "live";
-  if (isBefore(now, interviewStartTime)) return "upcoming";
-  return "completed";
+  // Return the actual status from the database
+  return interview.status;
 };

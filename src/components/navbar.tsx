@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
-import { CodeIcon, BookOpen } from "lucide-react";
+import { CodeIcon, BookOpen, Users } from "lucide-react";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import DasboardBtn from "./DasboardBtn";
 const navbar = () => {
@@ -27,6 +27,13 @@ const navbar = () => {
             >
               <BookOpen className="w-4 h-4" />
               Questions
+            </Link>
+            <Link
+              href="/interviews"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Users className="w-4 h-4" />
+              Interviews
             </Link>
           </div>
         </SignedIn>
