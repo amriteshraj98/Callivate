@@ -29,4 +29,25 @@ export default defineSchema({
     interviewerId: v.string(),
     interviewId: v.id("interviews"),
   }).index("by_interview_id", ["interviewId"]),
+
+  questions: defineTable({
+    title: v.string(),
+    description: v.string(),
+    examples: v.array(v.object({
+      input: v.string(),
+      output: v.string(),
+      explanation: v.optional(v.string()),
+    })),
+    starterCode: v.object({
+      javascript: v.string(),
+      python: v.string(),
+      java: v.string(),
+      cpp: v.string(),
+    }),
+    constraints: v.optional(v.array(v.string())),
+    createdBy: v.string(), // clerkId of the user who created the question
+    isDefault: v.optional(v.boolean()), // to mark default questions
+  })
+    .index("by_created_by", ["createdBy"])
+    .index("by_default", ["isDefault"]),
 });

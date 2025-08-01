@@ -7,6 +7,7 @@ import ConvexClerkProvider from "@/components/providers/ConvexClerkProvider";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
+import QuestionInitializer from "@/components/QuestionInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
           >
             <SignedIn>
               <div className="min-h-screen">
+                <QuestionInitializer />
                 <Navbar />
                 <main className="px-4 sm:px-6 lg:px-8">{children}</main>
               </div>
