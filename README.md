@@ -2,7 +2,7 @@
 
 > Streamline technical interviews with real-time video, structured evaluations, and flexible question management.
 
-[🌐 Live Demo](https://callivate-blond.vercel.app)
+[🌐 Live ](https://callivate-blond.vercel.app)
 
 ---
 
