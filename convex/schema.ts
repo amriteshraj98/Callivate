@@ -10,7 +10,7 @@ export default defineSchema({
         role : v.union(v.literal("candidate"),v.literal("interviewer")),
         clerkId: v.string(),
     }).index("by_clerk_id",["clerkId"]),
-     interviews: defineTable({
+    interviews: defineTable({
     title: v.string(),
     description: v.optional(v.string()),
     startTime: v.number(),
