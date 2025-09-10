@@ -9,7 +9,7 @@ function DasboardBtn() {
   const { isCandidate, isLoading } = useUserRole();
 
   if (isCandidate || isLoading) return null;
-
+  // dashboard tabhi dikhayenge jab interviewer hoga 
   return (
     <Link href={"/dashboard"}>
       <Button className="gap-2 font-medium" size={"sm"}>

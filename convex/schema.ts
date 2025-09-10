@@ -19,6 +19,9 @@ export default defineSchema({
     streamCallId: v.string(),
     candidateId: v.string(),
     interviewerIds: v.array(v.string()),
+    currentQuestionId: v.optional(v.id("questions")),
+    currentCode: v.optional(v.string()),
+    currentLanguage: v.optional(v.string()),
     result: v.optional(v.union(v.literal("pass"), v.literal("fail"))),
     review: v.optional(v.object({
       rating: v.number(),

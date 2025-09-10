@@ -24,6 +24,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useParams } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 function MeetingRoom() {
   const router = useRouter();
@@ -32,6 +34,7 @@ function MeetingRoom() {
   const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
   const { isInterviewer } = useUserRole();
+  const { user } = useUser();
 
   const callingState = useCallCallingState();
 
@@ -41,6 +44,27 @@ function MeetingRoom() {
   });
 
   const updateInterviewStatus = useMutation(api.interviews.updateInterviewStatus);
+  const updateInterviewCandidate = useMutation(api.interviews.updateInterviewCandidate);
+
+  // Update candidate when a non-interviewer joins the meeting
+  useEffect(() => {
+    if (!interview || !user) return;
+    
+    // For instant meetings, determine role based on who created the meeting
+    // If the current user is in the interviewerIds, they are the interviewer
+    // If not, they are the candidate
+    const isUserInterviewer = interview.interviewerIds.includes(user.id);
+    
+    // If the current user is not the candidate and not an interviewer, update the candidate
+    if (!isUserInterviewer && interview.candidateId !== user.id) {
+      updateInterviewCandidate({
+        interviewId: interview._id,
+        candidateId: user.id,
+      }).catch((error) => {
+        console.error("Failed to update interview candidate:", error);
+      });
+    }
+  }, [interview, user, updateInterviewCandidate]);
 
   if (callingState !== CallingState.JOINED) {
     return (

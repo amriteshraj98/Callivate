@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import QuestionInitializer from "@/components/QuestionInitializer";
+import MissedInterviewMarker from "@/components/MissedInterviewMarker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
             <SignedIn>
               <div className="min-h-screen">
                 <QuestionInitializer />
+                <MissedInterviewMarker />
                 <Navbar />
                 <main className="px-4 sm:px-6 lg:px-8">{children}</main>
               </div>

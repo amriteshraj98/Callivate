@@ -57,27 +57,43 @@ export default function InterviewCard({ interview }: InterviewCardProps) {
       .map(user => user.name);
   };
 
-  const formatDuration = (startTime: number, endTime?: number) => {
-    if (!endTime) return "Ongoing";
-    const duration = endTime - startTime;
-    const minutes = Math.floor(duration / 60000);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
+  const formatDuration = (startTime: number, endTime?: number, status?: string) => {
+    // For missed interviews, show "Missed" instead of duration
+    if (status === "missed") return "Missed";
     
-    if (hours > 0) {
-      return `${hours}h ${remainingMinutes}m`;
+    // For live interviews without end time, show "Ongoing"
+    if (!endTime && status === "live") return "Ongoing";
+    
+    // For scheduled interviews without end time, show "Not Started"
+    if (!endTime && status === "scheduled") return "Not Started";
+    
+    // For completed interviews, calculate actual duration
+    if (endTime) {
+      const duration = endTime - startTime;
+      const minutes = Math.floor(duration / 60000);
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      
+      if (hours > 0) {
+        return `${hours}h ${remainingMinutes}m`;
+      }
+      return `${minutes}m`;
     }
-    return `${minutes}m`;
+    
+    return "Unknown";
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "upcoming":
+      case "scheduled":
         return <Badge variant="secondary">Scheduled</Badge>;
       case "live":
         return <Badge variant="default">In Progress</Badge>;
       case "completed":
         return <Badge variant="outline">Completed</Badge>;
+      case "missed":
+        return <Badge variant="destructive">Missed</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -129,7 +145,7 @@ export default function InterviewCard({ interview }: InterviewCardProps) {
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <ClockIcon className="h-4 w-4" />
-              <span>Duration: {formatDuration(interview.startTime, interview.endTime)}</span>
+              <span>Duration: {formatDuration(interview.startTime, interview.endTime, interview.status)}</span>
             </div>
           </div>
 

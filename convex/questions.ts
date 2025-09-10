@@ -19,6 +19,23 @@ export const getQuestions = query({
   },
 });
 
+// Get questions for a specific user (for meeting context)
+export const getQuestionsByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("User is not authenticated");
+
+    // Get questions created by the specified user
+    const questions = await ctx.db
+      .query("questions")
+      .withIndex("by_created_by", (q) => q.eq("createdBy", args.userId))
+      .collect();
+
+    return questions;
+  },
+});
+
 // Get a specific question by ID
 export const getQuestionById = query({
   args: { questionId: v.id("questions") },
