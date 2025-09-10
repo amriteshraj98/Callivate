@@ -263,18 +263,19 @@ export const updateInterviewResult = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    // Check if the user is an interviewer for this interview
     const interview = await ctx.db.get(args.interviewId);
     if (!interview) throw new Error("Interview not found");
-    
+
     if (!interview.interviewerIds.includes(identity.subject)) {
-      throw new Error("Not authorized to update this interview");
+      throw new Error("Not authorized to update interview result");
     }
 
     return await ctx.db.patch(args.interviewId, {
       result: args.result,
-      reviewedBy: identity.subject,
-      reviewedAt: Date.now(),
+      status: "completed",
+      endTime: Date.now(),
     });
   },
 });
+
+ 

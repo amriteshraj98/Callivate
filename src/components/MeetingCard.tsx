@@ -47,10 +47,8 @@ function MeetingCard({ interview }: { interview: Interview }) {
 
 
   const isCompleted = status === "completed";
-  const result = interview.result;
-  const hasResult = result !== undefined;
-  const review = interview.review;
-  const hasReview = review !== undefined;
+  const hasResult = interview.result;
+  const hasReview = interview.review;
 
   return (
     <Card>
@@ -79,24 +77,24 @@ function MeetingCard({ interview }: { interview: Interview }) {
         )}
 
         {/* Show result badge if interview has been reviewed */}
-        {result && (
+        {hasResult && (
           <div className="flex items-center gap-2">
-             {result === "pass" ? (
+            {interview.result === "pass" ? (
               <CheckCircle className="w-4 h-4 text-green-500" />
             ) : (
               <XCircle className="w-4 h-4 text-red-500" />
             )}
             <Badge
-             variant={result === "pass" ? "default" : "destructive"}
+              variant={interview.result === "pass" ? "default" : "destructive"}
               className="text-xs"
             >
-              {result.toUpperCase()}
+              {interview.result!.toUpperCase()}
             </Badge>
             {hasReview && (
               <div className="flex items-center gap-1">
                 <Star className="w-3 h-3 text-yellow-500 fill-current" />
                 <span className="text-xs text-muted-foreground">
-                 {review!.rating}/5
+                  {interview.review!.rating}/5
                 </span>
               </div>
             )}

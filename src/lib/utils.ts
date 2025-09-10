@@ -16,22 +16,19 @@ export interface GroupedInterviews {
   upcoming: Interview[];
   other: Interview[];
 }
-  export const groupInterviews = (interviews: Interview[]): GroupedInterviews => {
-  return interviews.reduce<GroupedInterviews>((acc, interview) => {
-  return interviews.reduce((acc: any, interview: Interview) => {
+
+export const groupInterviews = (interviews: Interview[] = []): GroupedInterviews => {
+  return interviews.reduce<GroupedInterviews>((acc: GroupedInterviews, interview: Interview) => {
     if (interview.status === "completed") {
       acc.completed.push(interview);
     } else if (interview.status === "live") {
-       acc.live.push(interview);
+      acc.live.push(interview);
     } else if (interview.status === "upcoming") {
-       acc.upcoming.push(interview);
+      acc.upcoming.push(interview);
     } else {
-      // Handle any other statuses
-       acc.other.push(interview);
+      acc.other.push(interview);
     }
-
     return acc;
-  }, {});
   }, { completed: [], live: [], upcoming: [], other: [] });
 };
 

@@ -11,7 +11,7 @@ import MeetingModal from "@/components/MeetingModal";
 import LoaderUI from "@/components/LoaderUI";
 import { Loader2Icon } from "lucide-react";
 import MeetingCard from "@/components/MeetingCard";
-import { groupInterviews, type GroupedInterviews } from "@/lib/utils";
+import { groupInterviews } from "@/lib/utils";
 
 export default function Home() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function Home() {
   if (isLoading) return <LoaderUI />;
 
   // Group interviews by status
-  const groupedInterviews: GroupedInterviews = groupInterviews(interviews ?? []);
+  const groupedInterviews = groupInterviews(interviews ?? []);
   return (
     <div className="container max-w-7xl mx-auto p-6">
       {/* WELCOME SECTION */}
@@ -74,7 +74,7 @@ export default function Home() {
           />
 
           {/* Completed Interviews Section for Interviewers */}
-          {groupedInterviews.completed.length > 0 && (
+          {groupedInterviews.completed && groupedInterviews.completed.length > 0 && (
             <div className="mt-12">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -98,7 +98,7 @@ export default function Home() {
           )}
 
           {/* Upcoming Interviews Section */}
-          {groupedInterviews.upcoming.length > 0 && (
+          {groupedInterviews.upcoming && groupedInterviews.upcoming.length > 0 && (
             <div className="mt-12">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -131,7 +131,7 @@ export default function Home() {
             ) : interviews.length > 0 ? (
               <div className="space-y-8">
                 {/* Upcoming Interviews */}
-                {groupedInterviews.upcoming.length > 0 && (
+                {groupedInterviews.upcoming && groupedInterviews.upcoming.length > 0 && (
                   <div>
                     <h2 className="text-xl font-semibold mb-4">Upcoming Interviews</h2>
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -143,7 +143,7 @@ export default function Home() {
                 )}
 
                 {/* Completed Interviews */}
-                {groupedInterviews.completed.length > 0 && (
+                {groupedInterviews.completed && groupedInterviews.completed.length > 0 && (
                   <div>
                     <h2 className="text-xl font-semibold mb-4">Completed Interviews</h2>
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
