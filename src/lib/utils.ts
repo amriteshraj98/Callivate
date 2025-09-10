@@ -10,23 +10,29 @@ export function cn(...inputs: ClassValue[]) {
 type Interview = Doc<"interviews">;
 type User = Doc<"users">;
 
-export const groupInterviews = (interviews: Interview[]) => {
-  if (!interviews) return {};
-
+export interface GroupedInterviews {
+  completed: Interview[];
+  live: Interview[];
+  upcoming: Interview[];
+  other: Interview[];
+}
+  export const groupInterviews = (interviews: Interview[]): GroupedInterviews => {
+  return interviews.reduce<GroupedInterviews>((acc, interview) => {
   return interviews.reduce((acc: any, interview: Interview) => {
     if (interview.status === "completed") {
-      acc.completed = [...(acc.completed || []), interview];
+      acc.completed.push(interview);
     } else if (interview.status === "live") {
-      acc.live = [...(acc.live || []), interview];
+       acc.live.push(interview);
     } else if (interview.status === "upcoming") {
-      acc.upcoming = [...(acc.upcoming || []), interview];
+       acc.upcoming.push(interview);
     } else {
       // Handle any other statuses
-      acc.other = [...(acc.other || []), interview];
+       acc.other.push(interview);
     }
 
     return acc;
   }, {});
+  }, { completed: [], live: [], upcoming: [], other: [] });
 };
 
 export const getCandidateInfo = (users: User[], candidateId: string) => {
